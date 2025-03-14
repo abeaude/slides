@@ -15,19 +15,19 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Render in public folder
+      - name: Render in docs folder
         run: >
             find * -type f -name _quarto.yml -print0 | 
                 while IFS= read -r -d '' LINE; do 
                     FOLDER=$(dirname "$LINE")
-                    mkdir -p "public/$FOLDER"
+                    mkdir -p "docs/$FOLDER"
                     quarto render "$FOLDER/slides.qmd"
-                    mv "$FOLDER/slides.html" "public/$FOLDER/slides.html"
+                    mv "$FOLDER/slides.html" "docs/$FOLDER/slides.html"
                 done
       - name: Publish slides
         run: |
             git config --global user.email "github-actions[bot]"
             git config --global user.name "60475121+abeaude@users.noreply.github.com "
-            git add public/*
+            git add docs/*
             git commit -m "Publishing slides"
             git push
