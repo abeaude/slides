@@ -1,0 +1,33 @@
+on:
+  push:
+
+name: Quarto Publish
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render in public folder
+        run: >
+            find * -type f -name _quarto.yml -print0 | 
+                while IFS= read -r -d '' LINE; do 
+                    FOLDER=$(dirname "$LINE")
+                    mkdir -p "public/$FOLDER"
+                    quarto render "$FOLDER/slides.qmd"
+                    mv "$FOLDER/slides.html" "public/$FOLDER/slides.html"
+                done
+      - name: Publish slides
+        run: |
+            git config --global user.email "github-actions[bot]"
+            git config --global user.name "60475121+abeaude@users.noreply.github.com "
+            git add public/*
+            git commit -m "Publishing slides"
+            git push

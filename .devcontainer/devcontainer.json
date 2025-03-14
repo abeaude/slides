@@ -1,0 +1,18 @@
+{
+    "name": "Quarto",
+    "image": "ghcr.io/quarto-dev/quarto@sha256:6e119153165914ef7d459dc5706da882a5fcaad08071a3ffb257b8eda6c22ad8",
+    "features": {},
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "naumovs.color-highlight",
+                "file-icons.file-icons",
+                "PKief.material-icon-theme",
+                "christian-kohler.path-intellisense",
+                "RaillyHugo.one-hunter",
+                "GitHub.vscode-github-actions",
+                "quarto.quarto"
+            ]
+        }
+    }
+}

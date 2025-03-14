@@ -1,0 +1,1325 @@
+---
+title: "Attention-based deep learning for (multi-)omics data"
+subtitle: "Laboratoires Pierre-Fabre"
+author: "Aurélien Beaude"
+date: 03/19/2025
+format:
+  revealjs: 
+    progress: true
+    embed-resources: true
+    theme: [simple, title-slide.scss]
+    slide-number: c
+    show-slide-number: all
+    pdf-separate-fragments: true
+    footer: Séminaire Pierre Fabre --- Aurélien BEAUDE
+    menu: false
+    callout-icon: false
+    margin: 0.05
+    width: 1200
+    include-in-header:
+      - file: mathjax-color.html
+    template-partials:
+      - title-slide.html
+    revealjs-plugins:
+      - pointer
+      - animate
+    filters: 
+      - animate
+---
+
+## Towards a personalized medicine
+
+```yaml { .animate src="figures/IntroductionPersoMedicine-MédecineTrad_Perso.svg"}
+setup:
+  - element: "#Title1"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+  - element: "#Patient1"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#Diagnosis1"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "2"
+  - element: "#Prognosis1"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "3"
+  - element: "#Treatment1"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "3"
+  - element: "#TreatmentOK"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "4"
+  - element: "#TreatmentKO1"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "5"
+  - element: "#TreatmentKO2"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "6"
+  - element: "#TreatmentKO3"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "7"
+  - element: "#Title2"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "8"
+  - element: "#Patient2"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "9"
+  - element: "#Diagnosis2"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "10"
+  - element: "#Prognosis2"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "11"
+  - element: "#Treatment2"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "12"
+  - element: "#CCL"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "13"
+```
+
+## Precision medicine
+
+![](figures/IntroductionPersoMedicine-SlideIntro.svg){fig-align="center" .r-stretch width="110%"}
+
+::: {.notes}
+Recap: Goal is to get/extract a diagnosis, a prognosis for a patient from many data (list them).
+Impossible for a physician to exploit all of this data. Need to use AI to get the predictions
+AI = use ML models but limits. 
+Instead use deep learning, why ? 
+Today, I will focus on omics data and deep learning architectures.
+:::
+
+
+## Outline {background-color="white"}
+
+:::: {layout-ncol="3"}
+
+::: {#first-column}
+### 1. Single omics 
+
+::: {style="font-size: 70%; padding-left: 0.7em;"}
+  - State of the Art
+  - AttOmics
+  - Results
+
+:::
+
+:::
+
+::: {#second-column}
+### 2. Multi Omics
+
+::: {style="font-size: 70%; padding-left: 0.7em;"}
+  - State of the Art
+  - CrossAttOmics
+  - Results
+  - CrossAttOmicsGate
+
+:::
+
+:::
+
+::: {#third-column}
+### 3. Interpretability
+
+::: {style="font-size: 70%; padding-left: 0.7em;"}
+  - Counterfactuals
+  - GAN
+  - Results
+
+:::
+
+:::
+
+::::
+
+### 4. Conclusions and Perspectives
+
+:::{.notes}
+Outline of today presentation. 
+Start with the study of individual omics with deep learning models. 
+:::
+
+# Single omics 
+
+## State of the art 
+
+[]{.fragment .fade-in-then-out}
+[]{.fragment .fade-in-then-out}
+[]{.fragment .fade-in-then-out}
+[]{.fragment .fade-in-then-out}
+[]{.fragment .fade-in-then-out}
+```yaml { .animate src="figures/SingleOmicsSOTA.svg"}
+animation:
+  - []
+  - 
+    - element: "#MLP"
+      modifier: transform
+      parameters:
+        - scale: 2
+          translateX: 250
+          translateY: 130
+  - 
+    - element: "#MLP"
+      modifier: transform
+      parameters:
+        - scale: 1
+          translateX: 0
+          translateY: 0
+    - element: "#MLP"
+      modifier: opacity
+      parameters: [0]
+    - element: "#AE"
+      modifier: transform
+      parameters:
+        - scale: 2
+          translateX: -250
+          translateY: 130
+  - 
+    - element: "#AE"
+      modifier: transform
+      parameters:
+        - scale: 1
+          translateX: 0
+          translateY: 0
+    - element: "#AE"
+      modifier: opacity
+      parameters: [0]
+    - element: "#CNN"
+      modifier: transform
+      parameters:
+        - scale: 2
+          translateX: 250
+          translateY: -130
+  - 
+    - element: "#CNN"
+      modifier: transform
+      parameters:
+        - scale: 1
+          translateX: 0
+          translateY: 0
+    - element: "#CNN"
+      modifier: opacity
+      parameters: [0]
+    - element: "#GNN"
+      modifier: transform
+      parameters:
+        - scale: 2
+          translateX: -250
+          translateY: -130
+  - 
+    - element: "#GNN"
+      modifier: transform
+      parameters:
+        - scale: 1
+          translateX: 0
+          translateY: 0
+    - element: "#CNN"
+      modifier: opacity
+      parameters: [1]
+    - element: "#AE"
+      modifier: opacity
+      parameters: [1]
+    - element: "#MLP"
+      modifier: opacity
+      parameters: [1]
+    
+```
+
+::: {.notes}
+Present each architecture
+CNN is not designed to be applied to 1D data with no spatial dependecies.
+GNN impact of the graph, some hyperparameters to consider. Do not consider all interactions: multiple components connexe.
+
+Consider everything = use MLP but some disadvantages
+:::
+
+## Limits 
+
+#### Classical deep learning limits
+::: {style="font-size: 75%;"}
+
+  + High number of parameters
+  + With limited number of examples
+  + Risk of overfitting
+
+:::
+
+:::{.callout-important appearance="simple"}
+
+{{< fa circle-exclamation >}} **How to reduce the number of parameters ?**
+
+:::
+
+#### Gene expression impacts patient differently
+::: {style="font-size: 75%;"}
+
++ With classical DL, features interactions are learned during training and fixed for inference
+
+:::
+  
+:::{.callout-important appearance="simple" icon=false}
+
+{{< fa circle-exclamation >}} **How to compute interaction specific to each patient ?**
+
+:::
+
+## (Self)-Attention mechanism
+
+:::: {.columns}
+
+::: {.column width="75%"}
+
+:::{.callout-note appearance="simple"}
+
+How to pick relevant information from input data $X = [x_i]_{1 \leq i \leq L}$ ?
+
+:::
+
+::: {style="font-size: 65%;"}
+
+::: {.incremental}
+
+* **Self-attention** allows to capture the associated context of each input element by interacting with other elements
+$$
+\operatorname{Attention}\left({\color{query}Q},{\color{key}K},{\color{value}V}\right) = \operatorname{softmax}\left(\frac{{\color{query}Q}{\color{key}K^T}}{\sqrt{d_k}}\right){\color{value}V}
+$$
+$\color{query}Q = \left[q_i\right]_{1 \leq i \leq L}$ with $\color{query}q_i = X_i \cdot W_q$, $\color{key}K$ and $\color{value}V$ are obtained similarly.
+ * Quadratic complexity (Space and Time)
+
+:::
+
+:::
+
+::: {style="font-size: 90%"}
+
+::: {.fragment .fade-up}
+
+:::{.callout-important appearance="simple"}
+
+{{< fa circle-exclamation >}} **How to apply self-attention to large vectors ?**
+
+:::
+
+:::
+
+::: {.fragment .fade-up}
+
+:::{.callout-tip appearance="simple"}
+
+{{< fa lightbulb >}}  **Group related features together and apply self-attention on it.**
+
+:::
+
+:::
+
+:::
+
+:::
+
+::: {.column width="25%"}
+
+::: {.fragment .fade-up fragment-index=1}
+
+![](figures/Attention.svg){fig-align="right" width=95%}
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+What is Attention more conceptually = relationships between inputs elements
+Attention space: alignment, normalization, applied = combine the different values with attention weight.
+:::
+
+## AttOmics Architecture
+
+:::: {.columns}
+
+::: {.column width="60%" }
+
+![](figures/AttOmics-ArchitectureFull.svg){fig-align="left" width=90%}
+
+:::
+
+::: {.column width="40%"}
+
+:::{.r-stack}
+
+::: {.fragment .fade-in-then-out fragment-index=1}
+
+::: {style="font-size: 70%;"}
+
+**Grouping Strategies**
+
+* Random
+* Clustering
+* Knowledge:
+  * Gene ontology
+  * Cancer Hallmarks
+
+$$
+\begin{align}
+X_G &= \mathcal{T}\left(X\right) \\
+ &= \left[X_{g_1}, \cdots, X_{g_4}\right]
+\end{align}
+$$
+
+:::
+
+:::
+
+::: {.fragment .fade-out fragment-index=5}
+
+::: {style="font-size: 70%;"}
+
+::: {.fragment .fade-in fragment-index=2}
+
+**Intra-group interactions**
+
+:::
+
+::: {.fragment .fade-in fragment-index=3}
+
+:::{.callout-important appearance="simple"}
+
+{{< fa circle-exclamation >}} **Gene grouping creates unwanted restrictions**
+
+Genes in group $g_1$ cannot interact with genes from other groups
+
+:::
+
+:::
+
+::: {.fragment .fade-in fragment-index=4}
+
+:::{.callout-tip appearance="simple"}
+
+{{< fa lightbulb >}} **Restore group interactions with the Attention mechanism.**
+
+:::
+
+:::
+
+::: {.fragment .fade-in fragment-index=2}
+
+$$ 
+X'_{g_i} = \operatorname{FCN}\left(X_{g_i}\right)
+$$
+
+$$ 
+X'_G = \left[X'_{g_1}, \cdots, X'_{g_4}\right]
+$$
+
+:::
+
+:::
+
+:::
+
+::: {.fragment .fade-in fragment-index=5}
+
+::: {style="font-size: 70%;"}
+
+**Inter-groups interactions** 
+
+:::{.callout-note appearance="simple"}
+
+New representation of each group taking into consideration features from other groups
+
+:::
+
+$$
+\begin{align}
+\color{query}q_i &= \color{query}X'_{g_i} \cdot W_q^h \\
+\color{key}k_i &= \color{key}X'_{g_i} \cdot W_k^h \\
+\color{value}v_i &=\color{value} X'_{g_i} \cdot W_v^h 
+\end{align}
+$$
+
+$$
+\begin{align}
+Z &= \operatorname{MultiHeadAttention}\left(X'_G\right) \\
+ &= \operatorname{concat}\left(\left[h_1, \cdots, h_H \right]\right) \\
+ h_i &= \operatorname{Attention}\left({\color{query}Q},{\color{key}K},{\color{value}V}\right)
+\end{align}
+$$
+
+:::
+
+:::
+
+:::
+
+:::
+
+::::
+
+
+## Results
+
+```yaml { .animate src="figures/AttOmicsLimitedTraining.svg" width=100%}
+setup: 
+  - element: "#DNAm_all"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+  - element: "#mRNA_all"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+  - element: "#miRNA_all"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+  - element: "#Zoom_DNAm"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#Zoom_mRNA"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#Zoom_miRNA"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#DNAm_curve"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#mRNA_curve"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#miRNA_curve"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+```
+
+## Cancer Signature {.smaller}
+
+:::: {.columns}
+
+::: {.column width="70%" }
+
+![](figures/AttOmicsCancerSignatures.png)
+
+:::
+
+::: {.column width="30%" }
+
+* Cancer heatmaps are a mean of patient heatmaps with the same cancer
+* Each square of the heatmap represents the attention weight between two different group learnt by the model
+
+::: {.fragment .fade-up fragment-index=1}
+
+::: {.fragment .highlight-red	fragment-index=1}
+
+**Across cancers different interactions are learnt**
+
+:::
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+Attention is localized, focus on some interactions that are different for each cancer
+When combined with knowledge this can be informative, here an example.
+:::
+
+## CESC cancer {.smaller}
+
+:::: {.columns}
+
+::: {.column width="60%" }
+
+![](figures/AttOmicsCESCPathways.svg){width=90%}
+
+:::
+
+::: {.column width="40%" }
+
+**Identified pathways:**
+
+* IL6 JAK STAT3 signaling
+* Hedgehog signaling
+* WNT singaling
+
+**Identified interactions:**
+
+* WNT and Hedgehog cross-talk involved in chemo-resistant cervical cancer
+
+:::
+
+::::
+
+## AttOmics Conclusions
+
+:::{.incremental}
+
+* Proposed a grouping mechanism to scale the self-attention to omics data
+* AttOmics has less parameters and achieves similar or better performances
+* AttOmics has better performances with a limited training set
+* Self-attention: capture patient specific feature interactions
+
+:::
+
+:::{style="font-size=90%;"}
+
+::: {.fragment .fade-up}
+
+:::{.callout-important appearance="simple"}
+
+{{< fa circle-exclamation >}} **Omics were analyzed individually but a phenotype results from their interaction**
+
+:::
+
+:::
+
+::: {.fragment .fade-up}
+
+:::{.callout-tip appearance="simple"}
+
+{{< fa lightbulb >}} **Combine the different omics in a single model.**
+
+:::
+
+:::
+
+:::
+
+# Multi omics
+
+:::{.notes}
+Omics = a different obeservation of the a common phenomenon/procees the gene expression
+Each omics is a modality, exploiting multiple omics at the same time = use multplie modalities
+==> multimodal AI
+:::
+
+## Multimodal AI
+
+```yaml { .animate src="figures/MultiModalAI.svg"}
+setup: 
+  - element: "#Q1"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+  - element: "#modalities"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+  - element: "#EF"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#LimEF"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "2"
+  - element: "#LF"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "3"
+  - element: "#LimLF"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "4"
+  - element: "#IF"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "5"
+  - element: "#AdvIF"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "6"
+  - element: "#HierFusion"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "7"
+  - element: "#Q2"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "8"
+  - element: "#Fusion"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "9"
+```
+
+::: {.notes}
+Multimodal AI = has various challenges. Today focus on **Representation** challenge: How to construct a multimodal representation.
+When constructing a multimodal representation there are 2 main questions: 
+* Where is the fusion done ? 3 modalities to illustrate this. data (EF), label (LF) and latent (IF)
+* How is the fusion done ? 
+Neural networks. Present some works using NN to fuse multiple omics. 
+:::
+
+## State of the art
+
+![](figures/SOTA_MultiOmics.svg){fig-align="center"}
+
+:::{.notes}
+CCL: we saw previously that attention operator could be used as a fusion operator. How would we use this with neural networks and the attention mechanism found in transformers. 
+:::
+
+## Attention as an integration strategy
+
+:::{.callout-note appearance="simple"}
+
+Attention mechansim can capture interaction between two vectors
+
+:::
+
+:::: {.columns}
+
+::: {.column width="40%" }
+
+::: {.fragment .fade-right}
+
+#### Early Fusion
+
+![](figures/AttentionEF.svg){fig-align="center" width=45%}
+
+:::
+
+::: {.fragment .fade-up}
+
+:::{.callout-important appearance="simple"}
+
+* **High dimensionnality**
+
+* **Attention complexity: $\mathcal{O}(n^2)$**
+
+:::
+
+:::
+
+:::
+
+::: {.column width="60%"}
+
+::: {.fragment .fade-left}
+
+#### Intermediate Fusion
+
+:::: {.columns}
+
+::: {.column  #vcenter width="45%"}
+
+::: {layout="[[-1], [-1], [1], [-1]]" style="font-size: 60%;"}
+
+\begin{align}
+Z_{\beta \rightarrow \alpha} &=  \operatorname{CrossAtt}_{\beta \rightarrow \alpha}\left(X_{\alpha}, X_{\beta} \right) \\
+&= \operatorname{Attention}\left(Q_{\alpha},K_{\beta},V_{\beta} \right)
+\end{align}
+
+
+:::
+
+::: 
+
+::: {.column width="50%" }
+
+![](figures/AttentionIF.svg){fig-align="right" width=80%}
+
+:::
+
+::::
+
+::: 
+
+::: {.fragment .fade-up}
+
+:::{.callout-important appearance="simple"}
+
+{{< fa circle-exclamation >}} **Consider all modality pairs: $n^2$ pairs to consider**
+
+:::
+
+:::
+
+::: {.fragment .fade-up}
+
+:::{.callout-tip appearance="simple"}
+
+{{< fa lightbulb >}} **Only consider pairs known to interact**
+
+:::
+
+:::
+
+:::
+
+::::
+
+:::{.notes}
+Recall: Attention computes an alignement between 2 inputs -> use this to align 2 modalities ? 
+* Consider an early fusion strategy: concat + self attention. Explain the attention matrix
+* Omics high dimensionality and quadratic complexity not usable in practice. 
+* IF strategy: adapt one modality to another. Asymetrical aspect to consider all interactions need to consider all pairs ! many pairs. How to reduce this. 
+* Focus on pairs known to be interacting. 
+:::
+
+## CrossAttOmics
+
+[]{.fragment .fade-in}
+[]{.fragment .fade-in}
+```yaml { .animate src="figures/CrossAttOmics.svg"}
+setup:
+  - element: "#arch"
+    modifier: opacity
+    parameters: [0]
+  - element: "#Freeze1"
+    modifier: opacity
+    parameters: [0]
+  - element: "#Freeze2"
+    modifier: opacity
+    parameters: [0]
+  - element: "#Freeze3"
+    modifier: opacity
+    parameters: [0]
+animation:
+  - 
+    - element: "#GraphOmics"
+      modifier: transform
+      parameters:
+        - scale: 3
+          translateX: 50
+          translateY: 75
+  - 
+    - element: "#GraphOmics"
+      modifier: transform
+      parameters:
+        - scale: 1.5
+          translateX: 350
+          translateY: 200
+    - element: "#arch"
+      modifier: opacity
+      parameters: [1]
+  - 
+    - element: "#Freeze1"
+      modifier: opacity
+      parameters: [1]
+    - element: "#Freeze2"
+      modifier: opacity
+      parameters: [1]
+    - element: "#Freeze3"
+      modifier: opacity
+      parameters: [1]
+```
+
+:::{.notes}
+For omics, I proposed to use the following interaction graph for omics. Details of the interactions.
+How to use this graph in an architecture based on cross attention. Lets consider this smaller interaction graph.
+How this graph is translated into the architecture. 
+Modalities are encoded, Latent representation interacts. IF strategy. 
+Enc freeze benefits from pretraining.
+
+Move to the results. Multiple omics are available, what are the impact of the different combinations. 
+:::
+
+## Omics combination
+
+```yaml { .animate src="figures/tcga_perf_omics_comb.svg"}
+setup:
+  - element: "#omics2"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+  - element: "#omics3"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#omics4"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "2"
+```
+
+::: {.notes}
+Comparison of the accuracy obtained with various deep learnign approaches and fusion strategy. 
+1 omics = protein best why? -> effectors and in TCGA proteins were selected as cancer markers = bias 
+Problem : This modality is not available in clinical settings. Can we achieve similar or better results by combining two or more omics other than proteomics.
+2 omics: some arch benefits, focus CrossAttOmics, other no gain
+3 omics: still gain, but some architectures nothing changes. 
+4+ omics: perf starts to degrade why ? Multimodal training is challenging, modalities compete with each other, some can be more informative. Early on in the optimization process, most informative modalities will be reinforced and the other modalities will more act like noise instead of cooperating with other modalities.
+
+Are all interactions important ? are they the same for  each cancer. 
+:::
+
+## Identifying important interactions {.smaller}
+
+:::: {.columns}
+
+::: {.column width=40%}
+
+**Layer-wise relevance propagation** 
+
+[]{.fragment .fade-in fragment-index=0}
+```yaml { .animate src="figures/LRP.svg"}
+setup:
+  - element: "#LRP"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+```
+
+::: {.fragment .fade-up fragment-index=1}
+
+![](figures/CrossAttOmicsDetailsLRP.svg){width=90%}
+
+:::
+
+:::
+
+::: {.column width=60%}
+
+::: {.fragment .fade-up fragment-index=2}
+
+![](figures/CrossAttOmicsLRP.svg){width=100%}
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+To assess the importance of the interactions we proposed to use a post-hoc method : LRP. 
+What is LRP: forward get a predicition, retropropagate the signal to see the importance of each neurons with a set of rules. 
+Apply this on the CrossAttOmics architecture, retroprogate up to the output of the cross attention. Score is the sum of all neurons scores at this level. 
+Mean of patiens with the same cancer to have cancer signatures. 
+ 
+Some details for the cancer proposed. 
+:::
+
+
+## Robustness to missing modalities
+
+:::: {.columns}
+
+::: {.column width="33%"}
+
+
+::: {layout="[[1], [1, 1]]"}
+
+::: {.fragment .fade-up fragment-index=1}
+
+![](figures/missing_modality_pattern.svg)
+
+:::
+
+::: {.fragment .fade-up	 fragment-index=2}
+
+::: {.fragment .semi-fade-out fragment-index=4}
+
+![](figures/missing_modality_latent.svg)
+
+:::
+
+:::
+
+::: {.fragment .fade-up fragment-index=3}
+
+::: {.fragment .semi-fade-out fragment-index=4}
+
+![](figures/missing_modality_reconstruction.svg)
+
+:::
+
+:::
+
+:::
+
+:::
+
+::: {.column width="67%"}
+
+::: {.fragment .fade-up fragment-index=4}
+
+![](figures/CrossAttOmicsModalityDropout.svg){fig-align="center" width=90%}
+
+:::
+
+:::
+
+::::
+
+:::{.notes}
+Other challenge with multimodal related to the avialability of modalities. Acquiring multiple modalities can be expensive, not all modalities are always available.
+* HOw the architecture can handle missing modalities ?
+* How to increase the robustness to missing modalities ?
+
+Different strategies are available.
+choose the pattern: modality dropout.
+
+Results: train with modality dropout and evaluate with the different missingness pattern. 
+Normal perf decreases, modality dropout the decrease happens later = more robust
+Impact is different according to which omics is missing. Proteins/mRNA. 
+:::
+
+## Multi-omics conclusions 
+
+:::{.incremental}
+
+* Harness cross-attention to build a multimodal representation explicitly considering interactions between modalities.
+* Using only two or three non-protein omics combination, achieve similar accuracy to what is obtained by training only on proteins.
+* Modality dropout increases robustness to missing modalities.
+* Data-driven strategy to identify important interactions: CrossAttOmicsGate.
+
+:::
+
+::: {.fragment .fade-up}
+
+:::{.callout-important appearance="simple"}
+
+{{< fa circle-exclamation >}} **Patient can be diagnosed efficiently but what are the disease drivers? How to treat the patient?**
+
+:::
+
+:::
+
+# From predictions to actions
+
+## Motivation
+
+:::: {.columns}
+
+:::{.column width=50%}
+
+::: {.fragment .fade-right fragment-index=2}
+
+![](figures/CF_motivation.svg){width=100%}
+
+:::
+
+:::
+
+::: {.column width=50% style="font-size:80%;"}
+
+:::{.fragment .fade-up fragment-index=1}
+:::{.callout-important appearance="simple"}
+{{< fa circle-exclamation >}} **What are the important genes or potential biomarkers?**
+:::
+:::
+
+:::{.fragment .fade-up fragment-index=2}
+:::{.callout-important appearance="simple"}
+{{< fa circle-exclamation >}} **Whate are the actions that could lead a patient to a healthier state?**
+:::
+:::
+
+:::{.fragment .fade-up fragment-index=3}
+:::{.callout-tip appearance="simple"}
+{{< fa lightbulb >}} **Counterfactuals**
+:::
+:::
+
+:::
+
+::::
+
+## Counterfactuals
+
+:::{.callout-note appearance="simple"}
+
+**How would $x$ change if $y$ had been $y^{\prime}$?**
+
+:::
+
+> $y$ was predicted because input $x$ had values $\left(x_{1}, x_{2}, x_{3}, \ldots\right)$. If $x$ instead had values $x_{1}^{\prime}$ and $x_{2}^{\prime}$ while other variables, $\left(x_{3}, \ldots\right)$, had remain the same, $y^{\prime}$ would have been predicted.
+
+:::{style="text-align: right; font-size:50%;"}
+(Wachter et al., 2017)
+:::
+
+
+$$ 
+\operatorname*{argmin}_{x^{\text{CF}}} \mathcal{L}\left(g\left(x^{\text{CF}}\right), y^{\text{CF}} \right) + d\left(x^{\text{CF}}, x\right)
+$$
+
+:::{.fragment .fade-up}
+:::{.callout-important appearance="simple"}
+{{< fa circle-exclamation >}} **Is it sufficient to have realistic and actionnable points?**
+:::
+:::
+
+
+
+## Counterfactuals properties
+
+[]{.fragment .fade-in-then-out fragment-index=0}
+[]{.fragment .fade-in-then-out fragment-index=1}
+[]{.fragment .fade-in-then-out fragment-index=2}
+[]{.fragment .fade-in-then-out fragment-index=3}
+```yaml {.animate src="figures/counterfactualsProperties.svg"}
+setup: 
+  - element: "#CF"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+  - element: "#actionnability"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#actionnability_mask"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "1"
+  - element: "#sparsity"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "2"
+  - element: "#manifold"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "3"
+```
+
+::: {.fragment .fade-in fragment-index=4}
+Data manifold closeness = respect the original data distribution
+:::
+
+::: {.fragment .fade-in fragment-index=5}
+{{< fa right-long >}} GANs captures the data distribution (Goodfellow et al., 2014)
+:::
+
+## Generating counterfactuals with a GAN
+
+![](figures/ConterfactualGAN.svg){fig-align="center" .r-stretch}
+
+:::{style="font-size:80%;"}
+$$
+ \mathcal{L} = {\color{manifold}\mathbb{E}_{x\sim p_{d}}\left[ D\left(x\right)\right] - \mathbb{E}_{x^{\text{CF}}\sim p_{g}}\left[ D\left(x^{\text{CF}}\right)\right] + \lambda \mathbb{E}_{\tilde{x}\sim p_{g}}\left[ {\left( {\left\|\nabla_{\tilde{x}}D\left(\tilde{x}\right) \right\|}_{2} -1 \right)}^{2}\right]} \\ + {\color{cf}\mathcal{L}_{\operatorname{Cl}} + \mathcal{L}_{\operatorname{Cl}_{T}}} + {\color{sparsity}\mathcal{L}_{\text{Reg}}\left(G\right)}
+$$
+:::
+
+## Preliminary Results
+
+::::{.columns}
+
+:::{.column width=70% }
+:::{style="font-size:80%;"}
+* Counterfactual Accuracy ($y^{\text{CF}}$ ✅︎ and $y_{\text{Tissue}}$ ✅︎): $\mathcal{A}_{\text{CF}} = 0.96$
+* Distance to the original point: $L_1$, $L_2$, $L_{\infty}$
+* Sparsity: $L_0 = \sum_i \left|x_i \right|^{0}$ with $\left|0\right|^0 = 0$
+* kNN Accuracy: $\mathcal{A}_{\text{kNN}} = \frac{1}{k} = \sum_{i=1}^{k} \mathbb{1}\left(y^{\text{CF}}, y_{i}^{\text{kNN}}\right)$
+:::
+
+![](figures/kNN_Accuracy.svg){fig-align="center" width=50%}
+:::
+
+:::{.column width=30%}
+:::{style="font-size:65%;"}
+|                               |      |
+|-------------------------------|------|
+| $L_1$                         | 2440 |
+| $L_2$                         | 30   |
+| $L_{\infty}$                  | 1    |
+| $L_0$                         | 0.52 |
+| $\mathcal{A}_{\text{kNN}}$    | 0    |
+| $\mathcal{A}_{\text{Oracle}}$ | 0.94 |
+:::
+![](figures/InterClassDistances.svg){fig-align="center"}
+:::
+
+::::
+
+## Preliminary Results
+
+![](figures/BRCA_CF_UMAP.svg){fig-align="center"}
+
+## Preliminary Results
+
+![](figures/BRCA_CF.svg){.r-strech fig-align="center"}
+
+:::{style="font-size:40%;"}
+GDA: gene-disease association from DisGenet / COSMIC: Catalogue of somatic mutations in cancer
+:::
+
+# Conclusions and Perspectives
+
+## Conclusions 
+
+:::{.incremental style="font-size:75%;"}
+* **AttOmics**: Applied self-attention mechanism to omics profile to capture patient-specific interactions. Self-attention was applied to groups of features which allowed the addition of knowledge in the groups.
+  
+  :::{style="font-size:50%;"}
+  {{< fa book >}} **Aurélien Beaude**, Milad Rafiee Vahid, Franck Augé, Farida Zehraoui, and Blaise Hanczar.
+"AttOmics: attention-based architecture for diagnosis and prognosis from omics data."
+In: Intelligent Systems for Molecular Biology (ISMB). Lyon, France, 2023.
+  :::
+* **CrossAttOmics**: Integrate multi-omics data based on the known regulatory interactions between modalities and the cross-attention.
+
+  :::{style="font-size:50%;"}
+  {{< fa book >}} **Aurélien Beaude**, Franck Augé, Farida Zehraoui, and Blaise Hanczar. “CrossAttOmics:
+Multi-Omics data integration with CrossAttention.” In: Bioinformatics, *Under Revision* (2024).
+  :::
+* **CrossAttOmicsGate**: Let the network score each interaction with a gating mechanism
+
+  :::{style="font-size:50%;"}
+  {{< fa book >}} **Aurélien Beaude**, Farida Zehraoui, Franck Augé, and Blaise Hanczar. “Interpretable
+deep learning for multimodal high dimensional omics data.” *Under preparation* (2024).
+  :::     
+* **Counterfactual Generation**: Find the perturbation on the molecular profile that will change the prediction from a disease state to a health
+:::
+
+## Perspectives: Scalar Attention
+
+:::: {.columns}
+
+:::{.column width=65%}
+
+* Groups are an architectural constraints
+* Directly consider feature interactions
+
+::: {.fragment .fade-in fragment-index=1}
+:::{.callout-important appearance="simple"}
+{{< fa circle-exclamation >}} **How to compute attention between scalar values ?**
+:::
+:::
+
+:::{.fragment .fade-up fragment-index=2}
+$$
+A_{ij} = \operatorname{softmin}\left(\left|Q_{i} - K_{j} \right| \right)
+$$
+:::
+
+::: {.fragment .fade-left fragment-index=3}
+:::{.callout-tip appearance="simple"}
+{{< fa lightbulb >}} **Efficient implementation with Triton.**
+:::
+:::
+:::
+
+:::{.column width=35%}
+::: {.fragment .fade-left fragment-index=3}
+![](figures/ScalarAttentionMemory.svg){fig-align="right" width=100%}
+:::
+:::
+
+::::
+
+## Perspectives: Knowledge
+
+* Biologically-informed architectures are common when applying deep learning to biological problems as they provide a strong inductive bias.
+
+::: {.fragment .fade-up}
+:::{.callout-important appearance="simple"}
+{{< fa circle-exclamation >}} **Knowledge is incomplete or may contains errors. How to handle this ?**
+:::
+:::
+
+::: {.fragment .fade-up}
+:::{.callout-important appearance="simple"}
+{{< fa circle-exclamation >}} **Knowledge is iteratively constructed and omics measurement represent a *mean* of all occuring pathways.**
+:::
+:::
+
+::: {.fragment .fade-up}
+:::{.callout-important appearance="simple"}
+{{< fa circle-exclamation >}} **What to do about unnannotated features ?**
+:::
+:::
+
+:::{.notes}
+Place of knowledge as an inductive bias
+Iterative construction 
+:::
+
+## {.center background-color="black" background-image="figures/thank_you.png"	background-opacity=1 background-size="contain"}
+
+# Appendix
+
+## CrossAttOmicsGate: a data-driven approach
+
+![](figures/CrossAttOmicsGate.svg){.r-stretch}
+
+
+## CrossAttOmicsGate results {.smaller}
+
+|  Model  | Accuracy      | Precision     | Recall          | F1            |
+|---------|--------------:|--------------:|----------------:|--------------:|
+| No Gate | 0.980 ± 0.001 | 0.982 ± 0.002 | 0.979 ± 0.002   | 0.980 ± 0.002 |
+| Gate    | 0.987 ± 0.001 | 0.989 ± 0.001 | 0.987 ± 0.001   | 0.987 ± 0.001 |
+
+![](figures/CrossAttOmicsGateAlphaHeatmap.svg){fig-align="center"}
+
+## Adversarial training of $\operatorname{Cl}$
+
+::: {.incremental}
+* An **adversarial example**, $x^{\star} = x + \delta$, is an instance $x$ with the addition of a small perturbation
+$\delta$ that is incorrectly predicted by a model
+* They are obtained by solving $\max_{\delta \in \Delta} \mathcal{L}\left(\operatorname{Cl}\left(x + \delta\right), y\right)$ with gradient ascent. (ex: projected gradient ascent)
+* Adversarial training:
+$$
+\min_{\operatorname{Cl}} \mathbb{E}_{(x,y)}\left[\max_{\delta^{\star} \in \Delta} \mathcal{L}_{\text{CE}}\left(\operatorname{Cl}\left(x+\delta^{\star}\right), y \right)  \right]
+$$
+:::
