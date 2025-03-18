@@ -1,7 +1,10 @@
 {
     "name": "Quarto",
     "image": "ghcr.io/quarto-dev/quarto@sha256:6e119153165914ef7d459dc5706da882a5fcaad08071a3ffb257b8eda6c22ad8",
-    "features": {},
+    "postCreateCommand": "apt-get update && apt-get install -y --no-install-recommends ca-certificates && apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && rm -rf /var/cache/apt/ ",
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {}
+    },
     "customizations": {
         "vscode": {
             "extensions": [

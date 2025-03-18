@@ -908,53 +908,6 @@ Problem : This modality is not available in clinical settings. Can we achieve si
 Are all interactions important ? are they the same for  each cancer. 
 :::
 
-## Identifying important interactions {.smaller}
-
-:::: {.columns}
-
-::: {.column width=40%}
-
-**Layer-wise relevance propagation** 
-
-[]{.fragment .fade-in fragment-index=0}
-```yaml { .animate src="figures/LRP.svg"}
-setup:
-  - element: "#LRP"
-    modifier: attr
-    parameters:
-      - class: fragment
-        data-fragment-index: "0"
-```
-
-::: {.fragment .fade-up fragment-index=1}
-
-![](figures/CrossAttOmicsDetailsLRP.svg){width=90%}
-
-:::
-
-:::
-
-::: {.column width=60%}
-
-::: {.fragment .fade-up fragment-index=2}
-
-![](figures/CrossAttOmicsLRP.svg){width=100%}
-
-:::
-
-:::
-
-::::
-
-::: {.notes}
-To assess the importance of the interactions we proposed to use a post-hoc method : LRP. 
-What is LRP: forward get a predicition, retropropagate the signal to see the importance of each neurons with a set of rules. 
-Apply this on the CrossAttOmics architecture, retroprogate up to the output of the cross attention. Score is the sum of all neurons scores at this level. 
-Mean of patiens with the same cancer to have cancer signatures. 
- 
-Some details for the cancer proposed. 
-:::
-
 
 ## Robustness to missing modalities
 
@@ -1228,7 +1181,7 @@ Multi-Omics data integration with CrossAttention.” In: Bioinformatics, *Under 
   {{< fa book >}} **Aurélien Beaude**, Farida Zehraoui, Franck Augé, and Blaise Hanczar. “Interpretable
 deep learning for multimodal high dimensional omics data.” *Under preparation* (2024).
   :::     
-* **Counterfactual Generation**: Find the perturbation on the molecular profile that will change the prediction from a disease state to a health
+* **Counterfactual Generation**: Find the perturbation on the molecular profile that will change the prediction from a disease state to a healthy one
 :::
 
 ## Perspectives: Scalar Attention
@@ -1297,6 +1250,53 @@ Iterative construction
 ## {.center background-color="black" background-image="figures/thank_you.png"	background-opacity=1 background-size="contain"}
 
 # Appendix
+
+## Identifying important interactions {.smaller}
+
+:::: {.columns}
+
+::: {.column width=40%}
+
+**Layer-wise relevance propagation** 
+
+[]{.fragment .fade-in fragment-index=0}
+```yaml { .animate src="figures/LRP.svg"}
+setup:
+  - element: "#LRP"
+    modifier: attr
+    parameters:
+      - class: fragment
+        data-fragment-index: "0"
+```
+
+::: {.fragment .fade-up fragment-index=1}
+
+![](figures/CrossAttOmicsDetailsLRP.svg){width=90%}
+
+:::
+
+:::
+
+::: {.column width=60%}
+
+::: {.fragment .fade-up fragment-index=2}
+
+![](figures/CrossAttOmicsLRP.svg){width=100%}
+
+:::
+
+:::
+
+::::
+
+::: {.notes}
+To assess the importance of the interactions we proposed to use a post-hoc method : LRP. 
+What is LRP: forward get a predicition, retropropagate the signal to see the importance of each neurons with a set of rules. 
+Apply this on the CrossAttOmics architecture, retroprogate up to the output of the cross attention. Score is the sum of all neurons scores at this level. 
+Mean of patiens with the same cancer to have cancer signatures. 
+ 
+Some details for the cancer proposed. 
+:::
 
 ## CrossAttOmicsGate: a data-driven approach
 
