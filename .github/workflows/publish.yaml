@@ -1,5 +1,7 @@
 on:
   push:
+    branches:
+      - "main"
 
 name: Quarto Publish
 
@@ -11,23 +13,30 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-
+        with:
+          path: main
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: pages
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-
       - name: Render in docs folder
         run: >
-            find * -type f -name _quarto.yml -print0 | 
+            find main/* -type f -name _quarto.yml -print0 | 
                 while IFS= read -r -d '' LINE; do 
                     FOLDER=$(dirname "$LINE")
                     mkdir -p "_site/$FOLDER"
-                    quarto render "$FOLDER/slides.qmd"
+                    quarto render --quiet "$FOLDER/slides.qmd"
                     mv "$FOLDER/slides.html" "_site/$FOLDER/slides.html"
                 done
+      - name: Move rendered slides
+        run: mv -f -r main/_site/* pages/
       - name: Publish slides
-        uses: quarto-dev/quarto-actions/publish@v2
-        with:
-          target: gh-pages
-          render: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cd pages
+          git add -A .
+          git commit -m "Publish rendered slides"
+          git push
