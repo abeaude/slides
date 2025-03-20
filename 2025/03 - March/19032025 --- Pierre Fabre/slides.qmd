@@ -1145,18 +1145,6 @@ $$
 
 ::::
 
-## Preliminary Results
-
-![](figures/BRCA_CF_UMAP.svg){fig-align="center"}
-
-## Preliminary Results
-
-![](figures/BRCA_CF.svg){.r-strech fig-align="center"}
-
-:::{style="font-size:40%;"}
-GDA: gene-disease association from DisGenet / COSMIC: Catalogue of somatic mutations in cancer
-:::
-
 # Conclusions and Perspectives
 
 ## Conclusions 
@@ -1322,4 +1310,16 @@ $\delta$ that is incorrectly predicted by a model
 $$
 \min_{\operatorname{Cl}} \mathbb{E}_{(x,y)}\left[\max_{\delta^{\star} \in \Delta} \mathcal{L}_{\text{CE}}\left(\operatorname{Cl}\left(x+\delta^{\star}\right), y \right)  \right]
 $$
+:::
+
+## Preliminary Results
+
+![](figures/BRCA_CF_UMAP.svg){fig-align="center"}
+
+## Preliminary Results
+
+![](figures/BRCA_CF.svg){.r-strech fig-align="center"}
+
+:::{style="font-size:40%;"}
+GDA: gene-disease association from DisGenet / COSMIC: Catalogue of somatic mutations in cancer
 :::
