@@ -38,8 +38,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cd pages
-          git status
-          git add -A . && git status
-          # git commit -m "Publish rendered slides"
-          # git push
+          git add -A .
+          git commit -m "Publish rendered slides"
+          git push
+        working-directory: pages
