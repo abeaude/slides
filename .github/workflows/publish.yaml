@@ -26,7 +26,7 @@ jobs:
             find main/* -type f -name _quarto.yml -print0 | 
                 while IFS= read -r -d '' LINE; do 
                     FOLDER=$(dirname "$LINE")
-                    mkdir -p "_site/$FOLDER"
+                    mkdir -p "main/_site/$FOLDER"
                     quarto render --quiet "$FOLDER/slides.qmd"
                     mv "$FOLDER/slides.html" "_site/$FOLDER/slides.html"
                 done
