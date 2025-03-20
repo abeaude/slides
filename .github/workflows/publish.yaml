@@ -27,7 +27,7 @@ jobs:
                 while IFS= read -r -d '' LINE; do 
                     FOLDER=$(dirname "$LINE")
                     mkdir -p "main/_site/$FOLDER/"
-                    quarto render --quiet "main/$FOLDER/slides.qmd"
+                    quarto render "main/$FOLDER/slides.qmd" --quiet
                     mv "main/$FOLDER/slides.html" "main/_site/$FOLDER/slides.html"
                 done
       - name: Move rendered slides
