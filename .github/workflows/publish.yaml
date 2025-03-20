@@ -23,12 +23,12 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
       - name: Render in docs folder
         run: >
-            find main/* -type f -name _quarto.yml -print0 | 
+            find main -type f -name _quarto.yml -printf "%P\0" | 
                 while IFS= read -r -d '' LINE; do 
                     FOLDER=$(dirname "$LINE")
-                    mkdir -p "main/_site/$FOLDER"
-                    quarto render --quiet "$FOLDER/slides.qmd"
-                    mv "$FOLDER/slides.html" "_site/$FOLDER/slides.html"
+                    mkdir -p "main/_site/$FOLDER/"
+                    quarto render --quiet "main/$FOLDER/slides.qmd"
+                    mv "main/$FOLDER/slides.html" "main/_site/$FOLDER/slides.html"
                 done
       - name: Move rendered slides
         run: mv -f -r main/_site/* pages/
