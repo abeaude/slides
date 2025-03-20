@@ -31,7 +31,7 @@ jobs:
                     mv "main/$FOLDER/slides.html" "main/_site/$FOLDER/slides.html"
                 done
       - name: Move rendered slides
-        run: mv -f -r main/_site/* pages/
+        run: mv -f main/_site/* pages/
       - name: Publish slides
         run: |
           git config user.name "github-actions[bot]"
