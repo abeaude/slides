@@ -33,7 +33,7 @@ jobs:
       - name: Move rendered slides
         run: mv -f main/_site/* pages/
       - name: DEBUG
-        run: cd pages && ls -al 
+        run: cd pages && ls -al && git status
       - name: Publish slides
         run: |
           git config user.name "github-actions[bot]"
